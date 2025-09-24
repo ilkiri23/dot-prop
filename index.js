@@ -30,7 +30,9 @@ function normalizeKey(key, object, pathIndex) {
 	return key;
 }
 
-function getPathSegments(path) {
+export function getPathSegments(path) {
+	if (Array.isArray(path)) return path;
+
 	const parts = [];
 	let currentSegment = '';
 	let currentPart = 'start';
@@ -196,7 +198,7 @@ function assertNotStringIndex(object, key) {
 }
 
 export function getProperty(object, path, value) {
-	if (!isObject(object) || typeof path !== 'string') {
+	if (!isObject(object) || typeof path !== 'string' && !Array.isArray(path)) {
 		return value === undefined ? object : value;
 	}
 
@@ -234,7 +236,7 @@ export function getProperty(object, path, value) {
 }
 
 export function setProperty(object, path, value) {
-	if (!isObject(object) || typeof path !== 'string') {
+	if (!isObject(object) || typeof path !== 'string' && !Array.isArray(path)) {
 		return object;
 	}
 
@@ -266,7 +268,7 @@ export function setProperty(object, path, value) {
 }
 
 export function deleteProperty(object, path) {
-	if (!isObject(object) || typeof path !== 'string') {
+	if (!isObject(object) || typeof path !== 'string' && !Array.isArray(path)) {
 		return false;
 	}
 
@@ -300,7 +302,7 @@ export function deleteProperty(object, path) {
 }
 
 export function hasProperty(object, path) {
-	if (!isObject(object) || typeof path !== 'string') {
+	if (!isObject(object) || typeof path !== 'string' && !Array.isArray(path)) {
 		return false;
 	}
 
@@ -359,7 +361,7 @@ function stringifyPath(pathSegments) {
 	return result;
 }
 
-function * deepKeysIterator(object, currentPath = []) {
+function* deepKeysIterator(object, currentPath = []) {
 	if (!isObject(object) || isEmptyObject(object)) {
 		if (currentPath.length > 0) {
 			yield stringifyPath(currentPath);
@@ -369,7 +371,7 @@ function * deepKeysIterator(object, currentPath = []) {
 	}
 
 	for (const [key, value] of entries(object)) {
-		yield * deepKeysIterator(value, [...currentPath, key]);
+		yield* deepKeysIterator(value, [...currentPath, key]);
 	}
 }
 

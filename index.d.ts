@@ -1,4 +1,9 @@
-import {type Get} from 'type-fest';
+import { type Get } from 'type-fest';
+
+export type PathSegment = string | number;
+export type Path = string | PathSegment[];
+
+export function getPathSegments<PathType extends Path>(path: Path): PathSegment[];
 
 /**
 Get the value of the property at the given path.
@@ -30,7 +35,7 @@ getProperty({foo: [{bar: 'unicorn'}]}, 'foo.0.bar');
 //=> 'unicorn'
 ```
 */
-export function getProperty<ObjectType, PathType extends string, DefaultValue = undefined>(
+export function getProperty<ObjectType, PathType extends Path, DefaultValue = undefined>(
 	object: ObjectType,
 	path: PathType,
 	defaultValue?: DefaultValue
@@ -72,7 +77,7 @@ console.log(object);
 */
 export function setProperty<ObjectType extends (Record<string, any> | unknown[])>(
 	object: ObjectType,
-	path: string,
+	path: Path,
 	value: unknown
 ): ObjectType;
 
@@ -90,7 +95,7 @@ hasProperty({foo: {bar: 'unicorn'}}, 'foo.bar');
 //=> true
 ```
 */
-export function hasProperty(object: Record<string, any> | unknown[] | undefined, path: string): boolean;
+export function hasProperty(object: Record<string, any> | unknown[] | undefined, path: Path): boolean;
 
 /**
 Delete the property at the given path.
@@ -114,7 +119,7 @@ console.log(object);
 //=> {foo: {bar: {y: 'x'}}}
 ```
 */
-export function deleteProperty(object: Record<string, any> | unknown[], path: string): boolean;
+export function deleteProperty(object: Record<string, any> | unknown[], path: Path): boolean;
 
 /**
 Escape special characters in a path. Useful for sanitizing user input.
